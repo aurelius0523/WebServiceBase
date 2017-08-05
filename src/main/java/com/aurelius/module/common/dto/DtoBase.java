@@ -3,10 +3,9 @@ package com.aurelius.module.common.dto;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-import com.aurelius.util.enumeration.ValidationContext;
+import com.aurelius.module.common.enumeration.ValidationContext;
 
-public abstract class BaseDto {
-	
+public abstract class DtoBase {
 	public abstract void validate(ValidationContext context);
 	
 	public String toString() {

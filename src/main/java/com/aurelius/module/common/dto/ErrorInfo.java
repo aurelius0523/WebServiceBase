@@ -7,5 +7,5 @@ import lombok.Getter;
 public class ErrorInfo {
 	private String code;
 	private String message;
-	private String url;
+	private String path;
 }

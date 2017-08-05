@@ -1,4 +1,4 @@
-package com.aurelius.config;
+package com.aurelius.core;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

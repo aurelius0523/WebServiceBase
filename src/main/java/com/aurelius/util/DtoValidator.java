@@ -1,17 +1,14 @@
 package com.aurelius.util;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.aurelius.module.common.dto.validation.ValidationError;
-import com.aurelius.module.common.exception.ModelValidationException;
+import com.aurelius.module.common.enumeration.ValidationError;
+import com.aurelius.module.common.exception.ValidationException;
 
 import lombok.Getter;
 
-public class DtoValidator { 
-	    
-	   
+public final class DtoValidator { 
 	@Getter
 	private Map<Object, ValidationError> fieldToErrorMessage = new HashMap<>();
 	
@@ -20,17 +17,13 @@ public class DtoValidator {
 		return this;
 	}
 	
-	public void validate() throws ModelValidationException {
+	public void validate() {
 		if (!fieldToErrorMessage.isEmpty()) {
 			fieldToErrorMessage.forEach((field, validationError) -> {
-				if (field == null || isCollectionEmpty(field)) {
-					throw new ModelValidationException(validationError.getErrorCode() + ":" + validationError.getErrorDesc());
+				if (field == null || Validator.isCollectionEmpty(field)) {
+					throw new ValidationException(validationError);
 				}
 			});
 		}
-	}
-	
-	private boolean isCollectionEmpty(Object field) {
-		return field instanceof Collection && ((Collection<?>) field).isEmpty();
 	}
 }

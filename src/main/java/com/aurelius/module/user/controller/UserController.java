@@ -1,54 +1,64 @@
 package com.aurelius.module.user.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.aurelius.module.user.dto.UserCreateRequest;
 import com.aurelius.module.user.dto.UserDto;
-import com.aurelius.module.user.entity.User;
-import com.aurelius.module.user.service.UserService;
-import com.aurelius.util.enumeration.ValidationContext;
+import com.aurelius.module.user.entity.UserEntity;
+import com.aurelius.module.user.facade.UserFacade;
+import com.aurelius.module.user.mapper.UserMapper;
 
-//@Api("users")
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+
+@Api("users")
 @RestController
 @RequestMapping("/users")
 public class UserController {
-	private UserService service;
+	@Autowired
+	private UserFacade userFacade;
 
 	@Autowired
-	public void setService(UserService service) {
-		this.service = service;
-	}
+	private UserMapper userMapper;
+	
+	@ApiOperation(value = "createUser", tags = "users")
+	@PostMapping("/")
+    public ResponseEntity<UserDto> createUser(@RequestBody UserCreateRequest userRequest) {
+		userRequest.validate();
+		
+		UserDto userDto = userMapper.requestToDto(userRequest);
+    	UserDto returnedDto = userFacade.createUser(userDto);
+    	
+    	return ResponseEntity.status(HttpStatus.CREATED).body(returnedDto);
+    }
 
+	@ApiOperation(value = "getUser", tags = "users")
 	@GetMapping("/")
-    public ResponseEntity<User> getUserList() {
-    	User ut = new User();
-    	ut.setId("2");
-    	ut.setName("kl");
-    	return ResponseEntity.status(HttpStatus.OK).body(ut);
+    public ResponseEntity<Page<UserDto>> getUserList(
+    		@RequestParam(value = "page", required = true) int page,
+    		@RequestParam(value = "size", required = true) int size) {
+		
+		Page<UserDto> pages = userFacade.getUserList(page, size);
+    	return ResponseEntity.status(HttpStatus.OK).body(pages);
     }
     
-    @PostMapping("/")
-    public ResponseEntity<UserDto> createUser(@RequestBody UserDto user,
-    		Errors errors) {
-    	service.getClass();
-    	user.validate(ValidationContext.CREATE);
-    	return ResponseEntity.status(HttpStatus.CREATED).body(new UserDto());
-    }
+   
     
     @DeleteMapping("/{userId}")
-    public ResponseEntity<User> deleteUser(@Validated @RequestBody UserDto user, 
+    public ResponseEntity<UserEntity> deleteUser(@Validated @RequestBody UserDto user, 
     	@PathVariable ("userId") String userId) {
     	
     	return ResponseEntity.status(HttpStatus.OK).body(null);
@@ -56,7 +66,7 @@ public class UserController {
     
     @PutMapping("/{userId}")
     public ResponseEntity<UserDto> updateUser(@PathVariable ("userId") String userId,
-    		@ModelAttribute @RequestBody UserDto user) {
+    		@RequestBody UserDto user) {
     	
     	return ResponseEntity.status(HttpStatus.OK).body(null);
     }
