@@ -41,6 +41,12 @@ public class UserEntity implements Serializable {
 	private String createdBy;
 	private Date modifiedAt;
 	private String modifiedBy;
+	private byte byteSingle;
+	private byte[] byteArr;
+	private int intSingle;
+	private Integer intSingle2;
+	private short shortSingle;
+	private long longSingle;
 	
 	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
 	@Cascade(CascadeType.SAVE_UPDATE)
