@@ -20,7 +20,6 @@ import com.aurelius.module.user.entity.UserEntity;
 import lombok.Getter;
 import lombok.Setter;
 
-
 @Entity
 @Table(name = "Bank")
 @Getter @Setter
